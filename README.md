@@ -96,7 +96,3 @@ go test -bench=. -benchmem ./...
 ## License
 
 NeoPortKit is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
-
-## Origin
-
-NeoPortKit is based on the original [41NI/NetWard](https://github.com/41NI/NetWard) project.
