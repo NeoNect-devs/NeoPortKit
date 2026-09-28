@@ -2,7 +2,7 @@
 
 NeoPortKit is a zero-dependency Go library for discovering local listening network ports.
 
-It provides a synchronous, OS-agnostic public API backed by a Linux-specific `procfs` implementation. NeoPortKit is intended to serve as a foundational primitive for downstream server monitoring, administration, networking, security tooling, and future server management UI panels.
+It provides a synchronous, OS-agnostic public API backed by a Linux-specific `procfs` implementation. NeoPortKit is intended to be used as a building block for a future server management panel and server monitoring system.
 
 ## V1 Scope and Supported Platforms
 
@@ -68,28 +68,16 @@ The `Listener` struct represents an active local listening network port:
 
 Process ID resolution is best-effort. NeoPortKit iterates through `/proc/[pid]/fd` to correlate socket inodes to running processes.
 
-Because `/proc` directory permissions vary based on the user executing the program (e.g., a non-root user cannot read root-owned process directories), PID resolution may be prevented by the OS.
+Because `/proc` directory permissions vary based on the user executing the program, PID resolution may be prevented by the OS.
 
-When a process ID cannot be resolved due to permissions or other `/proc` limitations, NeoPortKit gracefully falls back to returning the constant sentinel value `neoportkit.UnresolvedPID` (`0`). It will not return an error or panic.
-
-## Intended Use
-
-NeoPortKit is designed to provide local network information for higher-level applications and services, including:
-
-* Server monitoring
-* Server administration and management tools
-* Backend services
-* Security and networking tools
-* Future server management and monitoring UI panels
+When a process ID cannot be resolved, NeoPortKit returns the sentinel value `neoportkit.UnresolvedPID` (`0`). It will not return an error or panic.
 
 ## Limitations
 
-* **Hardcoded `/proc` paths:** NeoPortKit relies on the standard `/proc` mounting location. It currently does not support custom `/proc` roots (e.g., scanning a host filesystem mounted inside a container at `/host/proc`).
-* **Shared Sockets:** If a single listening socket is shared by multiple processes (e.g., via `fork`), the `Listener` will report exactly one owning `ProcessID`.
+* **Hardcoded `/proc` paths:** NeoPortKit relies on the standard `/proc` mounting location.
+* **Shared Sockets:** If a listening socket is shared by multiple processes, the `Listener` will report one owning `ProcessID`.
 
 ## Development and Validation
-
-The repository maintains standard Go test conventions. To validate modifications locally:
 
 ```bash
 go fmt ./...
@@ -99,7 +87,7 @@ go test ./...
 go test -race ./...
 ```
 
-To run the internal PID-resolution benchmarks:
+To run benchmarks:
 
 ```bash
 go test -bench=. -benchmem ./...
@@ -108,3 +96,7 @@ go test -bench=. -benchmem ./...
 ## License
 
 NeoPortKit is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
+
+## Origin
+
+NeoPortKit is based on the original [41NI/NetWard](https://github.com/41NI/NetWard) project.
